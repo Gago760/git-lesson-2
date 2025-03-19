@@ -38,7 +38,7 @@ function printCategoriesBtns(obj) {
             }else{
                 a.push(e.id)
             }
-                // a = a.filter(b=>b == e.id)
+            // a = a.filter(b=>b == e.id)
             console.log(a);
             fetch(`https://api.themoviedb.org/3/discover/movie?${api_key}&with_genres=${a}`, options)
             .then(res => res.json())
@@ -46,7 +46,7 @@ function printCategoriesBtns(obj) {
             .catch(err => console.error(err));
             btn.classList.toggle('cat-btn')
         })
-
+        
     })
 }
 
@@ -58,7 +58,7 @@ fetch('https://api.themoviedb.org/3/movie/popular?'+api_key)
 closeX.addEventListener('click',()=>{
     searchPop.style.display = 'none'
     headerPop.style.display = 'none'
-
+    
     fetch('https://api.themoviedb.org/3/movie/popular?'+api_key)
     .then(response => response.json())
     .then(response => printPopulars(response.results))
@@ -68,13 +68,30 @@ closeX.addEventListener('click',()=>{
 function printPopulars(arr) {
     populars.innerHTML = ''
     arr.forEach((e) => {
+        let a = Math.round(e.vote_average)
+        let raiting = document.createElement('div')
+        raiting.classList.add('raiting')
+        if (a>7) {
+            raiting.classList.add('green')
+        }else{
+            raiting.classList.add('red')
+        }
+        raiting.innerHTML = a
         let movie = document.createElement('a')
         movie.href = `single.html?id=${e.id}`
         movie.classList.add('movie')
         movie.innerHTML = `
-            <img src="${img_url + e.poster_path}" >
+        <img src="${img_url + e.poster_path}" >
         `
+        movie.addEventListener('mouseenter',()=>{
+            raiting.style.display = 'flex'
+        })
+        movie.addEventListener('mouseleave',()=>{
+            raiting.style.display = 'none'
+        })
         populars.appendChild(movie)
+        movie.append(raiting)
+
     })
 }
 
@@ -95,4 +112,5 @@ function searchMovie() {
     })
 }
 searchMovie()
+
 
